@@ -1,29 +1,36 @@
 import sqlite3
+
+
 def db_conn():
-    conn = sqlite3.connect('d:\python\itsm.db')
+    conn = sqlite3.connect('d:\itsm\itsm.db')
     return conn
+
+
 def db_cursor():
     conn = db_conn()
     cursor = conn.cursor()
     return cursor
+
+
 def query(sql):
     querycursor = db_cursor()
     querycursor.execute(sql)
     values = querycursor.fetchall()
-#    print("id\t姓名\t城市\t在岗")
-#    for value in values:
-#        print("%d\t%s\t%s\t%d" %(value[0],value[1],value[2],value[3]))
     querycursor.close()
     return values
+
+
 def db_update(register):
     conn = db_conn()
     updatecursor = conn.cursor()
     name = input("请输入协管员姓名：")
     city = input("请输入协管员所在城市：")
-    sql = 'update personnel_info set register = ' + register + ' where name = "' + name + '" and city="' + city + '"' 
+    sql = 'update personnel_info set register = ' + register + ' where name = "' + name + '" and city="' + city + '"'
     updatecursor.execute(sql)
     conn.commit()
-    user_info = query("select * from personnel_info where name='%s' and city='%s'" %(name,city))
+    user_info = query(
+        "select * from personnel_info where name='%s' and city='%s'" % (name,
+                                                                        city))
     if user_info:
         i = 0
         print_info()
@@ -34,12 +41,17 @@ def db_update(register):
             elif person[3] == 0:
                 reg_cn = '离岗'
         i += 1
-        print("%d\t%d\t%s\t%s\t%s" %(i,person[0],person[1],person[2],reg_cn))
+        print("%d\t%d\t%s\t%s\t%s" % (i, person[0], person[1], person[2],
+                                      reg_cn))
     else:
         print("协管员信息有误！")
     updatecursor.close()
+
+
 def print_info():
     print("编号\t序号\t姓名\t单位\t是否在岗")
+
+
 print("请选择所需功能：")
 print("                1  增加新协管员")
 print("                2  调离协管员")
@@ -66,11 +78,11 @@ elif num == "4":
     i = 0
     for person in data:
         i += 1
-        print("%d\t%d\t%s\t%s\t在岗" %(i,person[0],person[1],person[2]))
+        print("%d\t%d\t%s\t%s\t在岗" % (i, person[0], person[1], person[2]))
 elif num == "5":
     print_info()
     data = query("select * from personnel_info where register = 0")
     i = 0
     for person in data:
         i += 1
-        print("%d\t%d\t%s\t%s\t在岗" %(i,person[0],person[1],person[2]))
+        print("%d\t%d\t%s\t%s\t在岗" % (i, person[0], person[1], person[2]))
