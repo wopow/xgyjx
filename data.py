@@ -86,3 +86,4 @@ elif num == "5":
     for person in data:
         i += 1
         print("%d\t%d\t%s\t%s\t在岗" % (i, person[0], person[1], person[2]))
+        
