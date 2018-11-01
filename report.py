@@ -38,31 +38,30 @@ for lable, col in zip(kh_lables, kh_col):
 #数据
 conn = sqlite3.connect('itsm.db')
 cursor = conn.cursor()
-sql = 'select personnel_info.name,personnel_info.city,transaciton_log.job,transaciton_log.overtime from personnel_info,transaciton_log where personnel_info.id=transaciton_log.person;'
+sql = 'select * from report;'
 data = cursor.execute(sql)
 values = data.fetchall()
 num = 1
 total = 0
-print(len(values))
 for value in values:
     row_num += 1
     kh_sheet['A' + str(row_num)] = num
-    kh_sheet['B' + str(row_num)] = num
+    kh_sheet['B' + str(row_num)] = value[1]
     kh_sheet['C' + str(row_num)] = value[0]
-    kh_sheet['D' + str(row_num)] = value[1]
-    kh_sheet['E' + str(row_num)] = value[1]
+    kh_sheet['D' + str(row_num)] = value[4]
+    kh_sheet['E' + str(row_num)] = value[2]
     jine = 0
-    if value[1] == '延吉':
-        if value[2] >= 10:
+    if value[4] == '延吉':
+        if value[5] >= 10:
             jine = 200
         else:
-            jine = 200 - (10 - value[2]) * 10
+            jine = 200 - (10 - value[5]) * 10
     else:
-        if value[2] >= 15:
+        if value[5] >= 15:
             jine = 300
         else:
-            jine = 300 - (15 - value[2]) * 10
-        jine = jine - value[3] * 20
+            jine = 300 - (15 - value[5]) * 10
+        jine = jine - value[6] * 20
     kh_sheet['F' + str(row_num)] = jine
     total = total + jine
     for col in kh_col:
