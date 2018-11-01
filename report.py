@@ -36,9 +36,9 @@ for lable, col in zip(kh_lables, kh_col):
     kh_sheet[col + str(row_num)].alignment = Alignment(horizontal='center')
     kh_sheet[col + str(row_num)].font = Font(name='微软雅黑', size=11)
 #数据
-conn = sqlite3.connect('d:\itsm\itsm.db')
+conn = sqlite3.connect('itsm.db')
 cursor = conn.cursor()
-sql = 'select * from personnel_info;'
+sql = 'select personnel_info.name,personnel_info.city,transaciton_log.job,transaciton_log.overtime from personnel_info,transaciton_log where personnel_info.id=transaciton_log.person;'
 data = cursor.execute(sql)
 values = data.fetchall()
 num = 1
@@ -47,14 +47,28 @@ print(len(values))
 for value in values:
     row_num += 1
     kh_sheet['A' + str(row_num)] = num
-    kh_sheet['B' + str(row_num)] = str(value[0])
-    kh_sheet['C' + str(row_num)] = value[1]
-    kh_sheet['D' + str(row_num)] = value[2]
-    kh_sheet['E' + str(row_num)] = str(value[3])
-    kh_sheet['F' + str(row_num)] = num
-    total = total + num
+    kh_sheet['B' + str(row_num)] = num
+    kh_sheet['C' + str(row_num)] = value[0]
+    kh_sheet['D' + str(row_num)] = value[1]
+    kh_sheet['E' + str(row_num)] = value[1]
+    jine = 0
+    if value[1] == '延吉':
+        if value[2] >= 10:
+            jine = 200
+        else:
+            jine = 200 - (10 - value[2]) * 10
+    else:
+        if value[2] >= 15:
+            jine = 300
+        else:
+            jine = 300 - (15 - value[2]) * 10
+        jine = jine - value[3] * 20
+    kh_sheet['F' + str(row_num)] = jine
+    total = total + jine
     for col in kh_col:
         kh_sheet[col + str(row_num)].border = set_border()
+        kh_sheet[col + str(row_num)].alignment = Alignment(horizontal='center')
+        kh_sheet[col + str(row_num)].font = Font(name='微软雅黑', size=11)
     num += 1
 #最后合计的一行
 row_num += 1
