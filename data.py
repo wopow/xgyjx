@@ -1,4 +1,5 @@
 import sqlite3
+from prettytable import PrettyTable
 
 
 def db_conn():
@@ -23,6 +24,7 @@ def query(sql):
 def db_update(register):
     conn = db_conn()
     updatecursor = conn.cursor()
+    print_depa()
     name = input("请输入协管员姓名：")
     city = input("请输入协管员所在城市：")
     sql = 'update personnel_info set register = ' + register + ' where name = "' + name + '" and city="' + city + '"'
@@ -48,8 +50,23 @@ def db_update(register):
     updatecursor.close()
 
 
-def print_info():
-    print("编号\t序号\t姓名\t单位\t是否在岗")
+def print_info(data, job):
+    table = PrettyTable(["编号", "序号", "姓名", "单位", "是否在岗"])
+    i = 0
+    for person in data:
+        i += 1
+        table.add_row([i, person[0], person[1], person[2], job])
+    print(table)
+
+
+def print_depa():
+    data = query("select * from department;")
+    table = PrettyTable(["序号", "部门名称", "机构代码", "所在城市"])
+    i = 0
+    for person in data:
+        i += 1
+        table.add_row([person[0], person[1], person[2], person[3]])
+    print(table)
 
 
 print("请选择所需功能：")
@@ -62,9 +79,11 @@ num = input("您想要进行哪个功能：")
 if num == "1":
     conn = db_conn()
     addcursor = conn.cursor()
+    print_depa()
     name = input("请输入协管员姓名：")
     city = input("请输入协管员所在城市：")
-    sql = "INSERT INTO personnel_info VALUES (null,'" + name + "','" + city + "',1 )"
+    person_code=input("请输入协管员员工编号：")
+    sql = "INSERT INTO personnel_info VALUES (null,'" + name + "','1',"+ city + ",'"+ person_code +"')"
     addcursor.execute(sql)
     conn.commit()
     addcursor.close()
@@ -73,17 +92,8 @@ elif num == "2":
 elif num == "3":
     db_update("1")
 elif num == "4":
-    print_info()
-    data = query("select * from personnel_info where register = 1")
-    i = 0
-    for person in data:
-        i += 1
-        print("%d\t%d\t%s\t%s\t在岗" % (i, person[0], person[1], person[2]))
+    data = query("select * from  onthejob;")
+    print_info(data, "在岗")
 elif num == "5":
-    print_info()
-    data = query("select * from personnel_info where register = 0")
-    i = 0
-    for person in data:
-        i += 1
-        print("%d\t%d\t%s\t%s\t在岗" % (i, person[0], person[1], person[2]))
-        
+    data = query("select * from absences;")
+    print_info(data, "离岗")
