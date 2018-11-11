@@ -1,12 +1,12 @@
 import sqlite3
 import prettytable as pt
-db = sqlite3.connect('d:\python\itsm.db')
+db = sqlite3.connect('itsm.db')
 cursor = db.cursor()
-sql = 'select transaciton_log.id,personnel_info.name,personnel_info.city,\
+sql = 'select transaciton_log.id,personnel_info.name,department.name,\
 transaciton_log.job,transaciton_log.overtime,transaciton_log.excess,\
 transaciton_log.date,transaciton_log.settle from transaciton_log,\
 personnel_info where transaciton_log.person=personnel_info.id \
-and transaciton_log.settle <> 1'
+and transaciton_log.settle <> 1 and department.id=personnel_info.department'
 
 cursor.execute(sql)
 userdata = cursor.fetchall()

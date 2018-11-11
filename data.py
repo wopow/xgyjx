@@ -24,26 +24,27 @@ def query(sql):
 def db_update(register):
     conn = db_conn()
     updatecursor = conn.cursor()
-    print_depa()
     name = input("请输入协管员姓名：")
-    city = input("请输入协管员所在城市：")
-    sql = 'update personnel_info set register = ' + register + ' where name = "' + name + '" and city="' + city + '"'
+    print_depa()
+    city = input("请输入协管员所在部门代码：")
+    sql = 'update personnel_info set register = ' + register + ' where name = "' + name + '" and department="' + city + '"'
     updatecursor.execute(sql)
     conn.commit()
     user_info = query(
-        "select * from personnel_info where name='%s' and city='%s'" % (name,
+        "select * from personnel_info where name='%s' and department='%s'" % (name,
                                                                         city))
+    print(user_info)
     if user_info:
         i = 0
-        print_info()
+#        print_info()
         for person in user_info:
             reg_cn = ''
-            if person[3] == 1:
+            if person[2] == 1:
                 reg_cn = '在岗'
-            elif person[3] == 0:
+            elif person[2] == 0:
                 reg_cn = '离岗'
         i += 1
-        print("%d\t%d\t%s\t%s\t%s" % (i, person[0], person[1], person[2],
+        print("%d\t%d\t%s\t%s\t%s" % (i, person[0], person[1], person[3],
                                       reg_cn))
     else:
         print("协管员信息有误！")
